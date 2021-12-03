@@ -157,6 +157,14 @@ load_balancer = elbv2_virginia.create_load_balancer(
 
 time.sleep(180)
 
+with open('load_balancer_dns.txt', 'r') as f:
+    data = f.readlines()
+
+data[0] = load_balancer['LoadBalancers'][0]['DNSName'] 
+
+with open('load_balancer_dns.txt', 'w') as f:
+    f.writelines(data)
+
 print("virginia load balancer created\n")
 
 listener = elbv2_virginia.create_listener(
