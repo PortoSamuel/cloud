@@ -1,0 +1,11 @@
+#!/bin/bash
+apt update
+apt install postgresql postgresql-contrib -y
+sudo -u postgres createdb tasks
+sudo -u postgres createuser cloud
+sudo -u postgres psql -c "alter user cloud with encrypted password 'cloud';"
+sudo -u postgres psql -c "grant all privileges on database tasks to cloud ;"
+sudo sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/10/main/postgresql.conf
+sudo echo "host all all 0.0.0.0/0 trust" >>  /etc/postgresql/10/main/pg_hba.conf
+sudo ufw allow 5432/tcp
+sudo systemctl restart postgresql
