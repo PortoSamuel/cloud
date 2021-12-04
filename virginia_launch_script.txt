@@ -8,7 +8,7 @@ sudo git clone https://github.com/PortoSamuel/tasks.git
 
 cd tasks
 
-sudo sed -i "s/'HOST': 'POSTGRES_IP'/'HOST': '3.134.87.59'/g" ./portfolio/settings.py
+sudo sed -i "s/'HOST': 'POSTGRES_IP'/'HOST': '3.22.66.55'/g" ./portfolio/settings.py
 
 sudo sed -i "s#cd /home/ubuntu/tasks#cd /tasks#g" install.sh
 

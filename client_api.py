@@ -18,4 +18,3 @@ dt = {
 result = requests.post(f'http://{dns}/users/', data=dt,  auth=HTTPBasicAuth('cloud','cloud'))
 
 print(result.json())
-
