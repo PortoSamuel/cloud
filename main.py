@@ -7,6 +7,9 @@ with open('ohio_launch_script.txt','r') as f:
 resource_ohio = boto3.resource('ec2')
 client_ohio = boto3.client('ec2')
 
+ohio_instances = resource_ohio.instances.filter(Filters=[{'Name': 'tag:Name', 'Values': ['InstanciaSamuel']}])
+ohio_instances.terminate()
+
 ohio_instance = resource_ohio.create_instances(
     ImageId='ami-020db2c14939a8efb',
     InstanceType='t2.micro',
@@ -62,6 +65,30 @@ resource_virginia = boto3.resource('ec2', region_name='us-east-1')
 client_virginia = boto3.client('ec2', region_name='us-east-1')
 elbv2_virginia = boto3.client('elbv2', region_name='us-east-1')
 autoscaling_virginia = boto3.client('autoscaling', region_name='us-east-1')
+
+autoscaling_virginia.delete_auto_scaling_group(
+                    AutoScalingGroupName='auto-scaling-samuel',
+                    ForceDelete=True
+                )
+
+time.sleep(60)
+
+autoscaling_virginia.delete_launch_configuration(LaunchConfigurationName='launch-config-samuel')
+
+time.sleep(60)
+
+load_balancers = elbv2_virginia.describe_load_balancers(Names=['load-balancer-samuel'])
+elbv2_virginia.delete_load_balancer(LoadBalancerArn=load_balancers['LoadBalancers'][0]['LoadBalancerArn'])
+
+time.sleep(60)
+
+target_groups = elbv2_virginia.describe_target_groups()["TargetGroups"]
+elbv2_virginia.delete_target_group(TargetGroupArn=target_groups[0]["TargetGroupArn"])
+
+time.sleep(60)
+
+imgs = client_virginia.describe_images(Owners=['self'])
+client_virginia.deregister_image(ImageId=imgs['Images'][0]['ImageId'])
 
 virginia_instance = resource_virginia.create_instances(
     ImageId='ami-0279c3b3186e54acd',
